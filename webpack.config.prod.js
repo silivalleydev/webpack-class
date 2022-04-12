@@ -5,9 +5,6 @@ const ManifestPlugin = require('webpack-manifest-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const version = require('./package.json').version;
 
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer')
-  .BundleAnalyzerPlugin;
-
 module.exports = (env, options) => {
   const config = {
     mode: 'production',
