@@ -26,7 +26,10 @@ module.exports = (env, options) => {
           exclude: '/node_modules',
           loader: 'babel-loader',
           options: {
-            presets: ['@babel/preset-env'],
+            presets: [
+              ['@babel/preset-env', {targets: {node: 'current'}}],
+              ['@babel/preset-react', {targets: {node: 'current'}}]
+            ],
             plugins: ['react-hot-loader/babel'],
           },
         },
@@ -48,7 +51,7 @@ module.exports = (env, options) => {
     plugins: [
       new CleanWebpackPlugin(),
       new HtmlWebPackPlugin({
-        template: './index.dev.html',
+        template: './public/index.html',
         filename: 'index.html',
         showErrors: true, // 에러 발생시 메세지가 브라우저 화면에 노출 된다.
       }),
@@ -56,8 +59,13 @@ module.exports = (env, options) => {
         fileName: 'assets.json',
         basePath: '/',
       }),
+      /**
+       * 모듈에 대한 중간 캐싱 단계를 제공하는 webpack용 플러그인이다. 
+       * 결과를 보려면 이 플러그인으로 webpack을 두 번 실행해야 한다. 
+       * 첫 번째 빌드에는 원래 빌드 시간과 동일하며, 
+       * 두 번째 빌드는 캐싱되어 있기 때문에 빌드가 훨씬 더 빠르는 장점이 있다.
+       */
       new HardSourceWebpackPlugin(),
-      // new BundleAnalyzerPlugin(),
       new webpack.DefinePlugin({
         DEF_TARGET: JSON.stringify(options.target || 'web'),
         DEF_MODE: JSON.stringify(options.mode),
@@ -80,10 +88,10 @@ module.exports = (env, options) => {
        */
       hot: true,
       // 서버가 로딩할 static 파일 경로 지정 
-      contentBase: path.join(
-        __dirname,
-        './dev-build/'
-      ),
+      // contentBase: path.join(
+      //   __dirname,
+      //   './dev-build/'
+      // ),
       port: 3000,
       /**
        * historyApiFallback은 HTML5의 History API를 사용하는 경우에, 
