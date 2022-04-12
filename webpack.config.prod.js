@@ -172,6 +172,7 @@ module.exports = (env, options) => {
         DEF_MODE: JSON.stringify(options.mode),
         APP_VERSION: JSON.stringify(version),
       }),
+      // copy-webpack-plugin: 웹팩이 실행될 때 패키지 빌드 파일을 복사
       new CopyPlugin([{
         // 어디에있는것을 복사하여 가져올지
         from: './node_modules/axios/dist/axios.min.js',
@@ -180,10 +181,10 @@ module.exports = (env, options) => {
     ],
 
     /**
+     * externals
      * 번들하지말아야할 대상은 빌드 범위에서 빼는 것
       패키지들은 보통 빌드된 파일이 있다.
       dist 폴더
-      copy-webpack-plugin: 웹팩이 실행될 때 패키지 빌드 파일을 복사
      */
     externals: {
       // 웹팩으로 빌드시 axios 사용하는 부분이 있으면 전역변수 axios 사용하는 것으로 간주
