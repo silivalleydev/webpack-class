@@ -149,13 +149,15 @@ module.exports = (env, options) => {
        * manifest.json을 생성해 매번 생성된 최종결과물과 매치되는 스태틱한 파일명을 
        * alias와 같은 형태로 사용할 수 있게 해주므로 import시는 고정값을 사용가능하게 됨
        * 
-       * 
+       * 번들링이 끝나면 지정된 경로 manifest.json 파일이 생기는
+          번들링을 통해 생성된 파일들의 정보가 manifest.json 파일에 기록된다
+          그래서 우리는 이 json 파일을 읽어 어떠한 파일이 어떠한 이름으로 최종적으로 번들링되어 파일이 생성되었는지 알 수 있다
        * webpack resolve의 alias에 '@C': path.resolve(__dirname, 'src/components/') 라고 설정했다고 가정했을때,
        * import CustomComponent from '@C/CustomComponent'; <= 이런식으로 import 가능하게 해줌
        * 공통적으로 쓰이는 컴포넌트 경로를 import 할때 경로를 단축하여 코드를 작성할 수 있어 유용하다
        */
       new ManifestPlugin({
-        fileName: 'assets.json',
+        fileName: 'manifest.json',
       }),
       // new BundleAnalyzerPlugin(),
       /**
@@ -190,6 +192,7 @@ module.exports = (env, options) => {
     resolve: {
       // resolve.extensions 는 import할때 확장자를 붙이지 않아도 되도록 하는 역할을 한다
       extensions: ['.js', '.jsx'],
+      // 특정 모듈을 더욱 쉽게 import 혹은 require 하기 위해 aliases 를 생성한다.
       alias: {
         '@': path.resolve(__dirname, 'src/'),
         '@C': path.resolve(__dirname, 'src/components/'),

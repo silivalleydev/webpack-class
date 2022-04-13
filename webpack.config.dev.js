@@ -31,6 +31,9 @@ module.exports = (env, options) => {
               ['@babel/preset-react', {targets: {node: 'current'}}]
             ],
             plugins: ['react-hot-loader/babel'],
+            // 이 옵션은 캐싱결과를 ./node_modules/.cache/babel-loader/ 에 적재하고
+            // 재 빌드 속도를 빠르게 해준다
+            cacheDirectory: true
           },
         },
         {
@@ -54,10 +57,6 @@ module.exports = (env, options) => {
         template: './public/index.html',
         filename: 'index.html',
         showErrors: true, // 에러 발생시 메세지가 브라우저 화면에 노출 된다.
-      }),
-      new ManifestPlugin({
-        fileName: 'assets.json',
-        basePath: '/',
       }),
       /**
        * 모듈에 대한 중간 캐싱 단계를 제공하는 webpack용 플러그인이다. 
@@ -88,10 +87,10 @@ module.exports = (env, options) => {
        */
       hot: true,
       // 서버가 로딩할 static 파일 경로 지정 
-      // contentBase: path.join(
-      //   __dirname,
-      //   './dev-build/'
-      // ),
+      contentBase: path.join(
+        __dirname,
+        './dev-build/'
+      ),
       port: 3000,
       /**
        * historyApiFallback은 HTML5의 History API를 사용하는 경우에, 
