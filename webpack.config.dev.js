@@ -115,6 +115,7 @@ module.exports = (env, options) => {
       historyApiFallback: true
     },
     resolve: {
+      extensions: ['.js', '.jsx'],
       alias: {
         '@': path.resolve(__dirname, 'src/'),
         '@C': path.resolve(__dirname, 'src/components/'),

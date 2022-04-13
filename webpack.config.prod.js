@@ -188,6 +188,8 @@ module.exports = (env, options) => {
       axios: 'axios'
     },
     resolve: {
+      // resolve.extensions 는 import할때 확장자를 붙이지 않아도 되도록 하는 역할을 한다
+      extensions: ['.js', '.jsx'],
       alias: {
         '@': path.resolve(__dirname, 'src/'),
         '@C': path.resolve(__dirname, 'src/components/'),
