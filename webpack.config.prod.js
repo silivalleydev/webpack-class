@@ -4,6 +4,10 @@ const HtmlWebPackPlugin = require('html-webpack-plugin');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const version = require('./package.json').version;
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const CopyPlugin = require("copy-webpack-plugin");
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const TerserPlugin = require("terser-webpack-plugin");
 
 module.exports = (env, options) => {
   const config = {
@@ -34,8 +38,7 @@ module.exports = (env, options) => {
        그래서 웹팩으로 번들 결과를 압축하거나 분리하여 최적화를 한다.
      */
     optimization: {
-      minimizer: mode === 'production' ? 
-      [
+      minimizer: [
         new OptimizeCSSAssetsPlugin(), // OptimizeCSSAssetsPlugin => css 파일 빈칸을 없애서 압축
         /** TerserPlugin은
          * 기본 설정으로 JavaScript 코드를 난독화 하고 debugger 구문을 제거
@@ -49,7 +52,7 @@ module.exports = (env, options) => {
             }
           }
         })
-      ] : [],  
+      ],  
       /**
        * 코드 스플리팅 개념
        * 코드를 압축해도, 프로젝트가 커지면 브라우저 성능에 영향을 줄 수 있다.
@@ -87,12 +90,17 @@ module.exports = (env, options) => {
           test: /\.(js|jsx)$/,
           // exclude 컴파일하지 않을 폴더 설정
           exclude: '/node_modules',
-          // use에 사용할 로더 설정
-          // babel-loader는 최신 자바스크립트 문법(ES6, ES2020, ES2019 등등)을 commonJS로 변환 시켜줄수 있도록 도와주는 로더
-          use: ['babel-loader'],
+          loader: 'babel-loader',
+          options: {
+            presets: [
+              ['@babel/preset-env', {targets: {node: 'current'}}],
+              ['@babel/preset-react', {targets: {node: 'current'}}]
+            ]
+          },
         },
         {
           test: /\.html$/,
+          // use에 사용할 로더 설정
           use: [
             {
               loader: 'html-loader',
@@ -135,7 +143,7 @@ module.exports = (env, options) => {
        * html 파일을 템플릿으로 생성할 수 있게 도와주는 플러그인이다
        */
       new HtmlWebPackPlugin({
-        template: './index.html',
+        template: './public/index.html',
         filename: 'index.html',
       }),
       /**
@@ -172,11 +180,11 @@ module.exports = (env, options) => {
         APP_VERSION: JSON.stringify(version),
       }),
       // copy-webpack-plugin: 웹팩이 실행될 때 패키지 빌드 파일을 복사
-      new CopyPlugin([{
-        // 어디에있는것을 복사하여 가져올지
-        from: './node_modules/axios/dist/axios.min.js',
-        to: './axios.min.js'
-      }])
+      // new CopyPlugin([{
+      //   // 어디에있는것을 복사하여 가져올지
+      //   from: './node_modules/axios/dist/axios.min.js',
+      //   to: './axios.min.js'
+      // }])
     ],
 
     /**
@@ -184,11 +192,11 @@ module.exports = (env, options) => {
      * 번들하지말아야할 대상은 빌드 범위에서 빼는 것
       패키지들은 보통 빌드된 파일이 있다.
       dist 폴더
-     */
-    externals: {
-      // 웹팩으로 빌드시 axios 사용하는 부분이 있으면 전역변수 axios 사용하는 것으로 간주
-      axios: 'axios'
-    },
+    //  */
+    // externals: {
+    //   // 웹팩으로 빌드시 axios 사용하는 부분이 있으면 전역변수 axios 사용하는 것으로 간주
+    //   axios: 'axios'
+    // },
     resolve: {
       // resolve.extensions 는 import할때 확장자를 붙이지 않아도 되도록 하는 역할을 한다
       extensions: ['.js', '.jsx'],
